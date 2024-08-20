@@ -36,8 +36,9 @@ class LoginView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
         password = request.data.get('password')
-        user = authenticate(username=username,
-                            password=make_password(password))
+
+        # Use the plain password for authentication
+        user = authenticate(username=username, password=password)
 
         if user:
             refresh = RefreshToken.for_user(user)
@@ -45,7 +46,7 @@ class LoginView(generics.GenericAPIView):
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
             })
-        return Response({'error': 'Invalid credentials'}, status=400)
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UserInfoView(APIView):
     permission_classes = [permissions.AllowAny]
