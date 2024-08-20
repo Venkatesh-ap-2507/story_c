@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view,permission_classes
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
+from rest_framework.permissions import AllowAny
 
 
 from rest_framework import status
@@ -14,6 +15,7 @@ from django.utils.functional import SimpleLazyObject
 from rest_framework.exceptions import ValidationError
 
 class RegisterView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
@@ -31,6 +33,7 @@ class RegisterView(APIView):
 
 
 class LoginView(generics.GenericAPIView):
+    permission_classes = [AllowAny]
     serializer_class = UserSerializer
 
     def post(self, request, *args, **kwargs):
@@ -49,7 +52,7 @@ class LoginView(generics.GenericAPIView):
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UserInfoView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [AllowAny]
 
     def get(self, request):
         if request.user.is_authenticated:
