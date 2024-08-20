@@ -51,14 +51,17 @@ class LoginView(generics.GenericAPIView):
             })
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
+
 class UserInfoView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request):
+        print("Authenticated:", request.user.is_authenticated)
         if request.user.is_authenticated:
             return Response(UserSerializer(request.user).data)
         else:
             return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 class StoryListView(generics.ListCreateAPIView):
    queryset = Story.objects.all()
